@@ -30,6 +30,8 @@ array([['00007.jpg', '1'],
 ```shell
 python age_editing.py \
 --image_path <PATH_TO_INPUT_IMAGE> \
+--age_init <INITIAL_AGE> \
+--gender <female|male> \
 --save_aged_dir <OUTPUT_DIR> \
 --specialized_path  <PATH_TO_SPECIALIZED_MODEL> \
 --target_ages 10 20 40 60 80

@@ -71,7 +71,8 @@ def image_grid(imgs_, rows=None, cols=None, sort_file_filter=None, remove_filter
 
             if sort_file_filter:
                 files = sorted(files, key=sort_file_filter)
-                files = [os.path.join(imgs_, f) for f in files]
+
+            files = [os.path.join(imgs_, f) for f in files]
         else:
             # imgs 是一个dir的list
             files = imgs_
