@@ -1,11 +1,17 @@
 # FADING
 
 ## Dataset
-FFHQ-Aging Dataset is downloaded from https://github.com/royorel/FFHQ-Aging-Dataset
+The FFHQ-Aging Dataset used for training FADING could be downloaded from https://github.com/royorel/FFHQ-Aging-Dataset
 
-## Specialization
+## Training (Specialization)
+
+### Available pretrained weights
+We release weights of our specialized model at https://drive.google.com/file/d/1galwrcHq1HoZNfOI4jdJJqVs5ehB_dvO/view?usp=share_link
+
+### Train a new model
+
 ```shell
-accelerate launch specialize.py \
+accelerate launch specialize_general.py \
 --instance_data_dir 'specialization_data/training_images' \
 --instance_age_path 'specialization_data/training_ages.npy' \
 --output_dir <PATH_TO_SAVE_MODEL> \
@@ -19,13 +25,11 @@ array([['00007.jpg', '1'],
        ['00009.jpg', '35']], dtype='<U21')
 ```
 
-## Age Editing
+## Inference (Age Editing)
 
 ```shell
 python age_editing.py \
---FFHQ_path <PATH_TO_FFHQ_DATASET> \
---FFHQ_label_path <PATH_TO_ffhq_aging_labels.csv> \
---FFHQ_id  1 \
+--image_path <PATH_TO_INPUT_IMAGE> \
 --save_aged_dir <OUTPUT_DIR> \
 --specialized_path  <PATH_TO_SPECIALIZED_MODEL> \
 --target_ages 10 20 40 60 80

@@ -113,6 +113,8 @@ def parse_args(input_args=None):
     )
 
 
+
+    #####
     parser.add_argument(
         "--revision",
         type=str,
@@ -372,16 +374,11 @@ class DreamBoothDatasetAge(Dataset):
             return_tensors="pt",
         ).input_ids
 
-        # instance_image_num = int(instance_image_path.split('/')[-1][:5])
-        # example["instance_image_num"] = instance_image_num
-        # instance_image_age = self.age_labels[instance_image_num]
-
         instance_image_name = instance_image_path.split('/')[-1]
         instance_image_age = int(self.age_labels[self.age_labels[:, 0] == instance_image_name][0, 1])
 
         example["instance_image_age"] = instance_image_age
         instance_age_prompt = self.instance_prompt.replace(" a ", f" a {instance_image_age} year old ")
-        # print(f"####### num {instance_image_num}, prompt {instance_age_prompt}")
 
         example["instance_age_prompt"] = instance_age_prompt
         example["instance_age_prompt_ids"] = self.tokenizer( # token(photo of a xx year old person)
@@ -431,8 +428,6 @@ def collate_fn(examples, finetune_mode="finetune_double_prompt"):
     pixel_values += [example["instance_images"] for example in examples]
 
     pixel_values_ages = [example["instance_image_age"] for example in examples]
-    # pixel_values_img_num = [example["instance_image_num"] for example in examples]
-
 
     pixel_values = torch.stack(pixel_values)
     pixel_values = pixel_values.to(memory_format=torch.contiguous_format).float()
@@ -444,7 +439,6 @@ def collate_fn(examples, finetune_mode="finetune_double_prompt"):
         "pixel_values": pixel_values,
 
         "pixel_values_ages": pixel_values_ages,
-        # "pixel_values_img_num": pixel_values_img_num,
     }
 
     return batch
@@ -509,9 +503,6 @@ def main(args):
     if args.seed is not None:
         set_seed(args.seed)
 
-
-
-
     # Handle the repository creation
     if accelerator.is_main_process:
         if args.push_to_hub:
@@ -562,8 +553,6 @@ def main(args):
 
         original_samples = (samples - sqrt_one_minus_alpha_prod * noise) / sqrt_alpha_prod
         return original_samples
-
-
 
     text_encoder = text_encoder_cls.from_pretrained(
         args.pretrained_model_name_or_path, subfolder="text_encoder", revision=args.revision
@@ -743,10 +732,7 @@ def main(args):
         if args.train_text_encoder:
             text_encoder.train()
 
-
         for step, batch in enumerate(train_dataloader):
-            # batch: {'input_ids', 'pixel_values','input_ids_multi_prompt', 'pixel_values_multi_prompt'}
-
             # Skip steps until we reach the resumed step
             if args.resume_from_checkpoint and epoch == first_epoch and step < resume_step:
                 if step % args.gradient_accumulation_steps == 0:
@@ -768,7 +754,6 @@ def main(args):
                 # Sample a random timestep for each image
                 timesteps = torch.randint(0, noise_scheduler.config.num_train_timesteps, (bsz,), device=latents.device)
                 timesteps = timesteps.long()
-
 
                 # Add noise to the latents according to the noise magnitude at each timestep
                 # (this is the forward diffusion process)
@@ -794,7 +779,6 @@ def main(args):
 
                 # noisy_latents = noise_scheduler.add_noise(latents, noise, timesteps)
                 pred_noisy_latents = noise_scheduler.add_noise(latents, model_pred.to(dtype=weight_dtype), timesteps)
-
 
                 loss = F.mse_loss(model_pred.float(), target.float(), reduction="mean")
                 instance_loss = loss
@@ -835,8 +819,6 @@ def main(args):
             repo.push_to_hub(commit_message="End of training", blocking=False, auto_lfs_prune=True)
 
     accelerator.end_training()
-
-
 
 if __name__ == "__main__":
     args = parse_args()
