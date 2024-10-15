@@ -10,7 +10,7 @@ Official repo for BMVC 2023 paper: [Face Aging via Diffusion-based Editing](http
 For more visualization results, please check [supplementary materiels](https://bmvc2022.mpi-inf.mpg.de/BMVC2023/0595_supp.pdf).
 
 <div align="center">
-    <a><img src="assets/FADING_demo.png"  width="100%" ></a>
+    <a><img src="FADING_demo.png"  width="100%" ></a>
 </div>
 
 > In this paper, we address the problem of face aging—generating past or future facial images by incorporating age-related changes to the given face. Previous aging methods rely solely on human facial image datasets and are thus constrained by their inherent scale and bias. This restricts their application to a limited generatable age range and the inability to handle large age gaps. We propose FADING, a novel approach to address Face Aging via DIffusion-based editiNG. We go beyond existing methods by leveraging the rich prior of large-scale language-image diffusion models. First, we specialize a pre-trained diffusion model for the task of face age editing by using an age-aware fine-tuning scheme. Next, we invert the input image to latent noise and obtain optimized null text embeddings. Finally, we perform text-guided local age editing via attention control. The quantitative and qualitative analyses demonstrate that our method outperforms existing approaches with respect to aging accuracy, attribute preservation, and aging quality.
